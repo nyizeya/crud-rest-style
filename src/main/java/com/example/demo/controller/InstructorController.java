@@ -54,7 +54,6 @@ public class InstructorController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('instructor:write')")
     public ResponseEntity<DataTablesOutput<InstructorDto>> createInstructor(
             @Valid @RequestBody InstructorRegistrationRequest request,
             BindingResult result

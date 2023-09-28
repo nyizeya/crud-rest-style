@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.entity.dto.CheckEmailRequest;
-import com.example.demo.model.entity.dto.CheckPhoneRequest;
-import com.example.demo.model.entity.dto.DataTablesOutput;
+import com.example.demo.model.entity.Instructor;
+import com.example.demo.model.entity.dto.*;
+import com.example.demo.model.entity.dto.mapper.InstructorMapper;
 import com.example.demo.model.service.InstructorService;
 import com.example.demo.security.model.AuthenticationRequest;
 import com.example.demo.security.utility.AuthenticationService;
@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping("/auth")
@@ -30,6 +31,33 @@ public class AuthController {
 
     private final AuthenticationService authenticationService;
     private final InstructorService instructorService;
+    private final InstructorMapper instructorMapper;
+
+    @PostMapping("register")
+    public ResponseEntity<DataTablesOutput<InstructorDto>> createInstructor(
+            @Valid @RequestBody InstructorRegistrationRequest request,
+            BindingResult result
+    ) {
+
+        DataTablesOutput<InstructorDto> dataTablesOutput = new DataTablesOutput<>();
+
+        if (result.hasErrors()) {
+            dataTablesOutput.setError("invalid instructor creation request");
+            return new ResponseEntity<>(dataTablesOutput, BAD_REQUEST);
+        }
+
+        Instructor instructor = instructorMapper.toEntity(request);
+
+        instructorService.saveInstructor(instructor);
+
+        InstructorDto instructorDto = instructorMapper.toDto(instructor);
+
+        dataTablesOutput.setData(Lists.newArrayList(instructorDto));
+        dataTablesOutput.setRecordsTotal(1);
+        dataTablesOutput.setRecordsFiltered(1);
+
+        return new ResponseEntity<>(dataTablesOutput, CREATED);
+    }
 
     @PostMapping("authenticate")
     public ResponseEntity<DataTablesOutput<Map<String, Map<String, Object>>>> authenticate(

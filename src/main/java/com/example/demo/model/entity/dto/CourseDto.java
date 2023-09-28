@@ -1,6 +1,7 @@
 package com.example.demo.model.entity.dto;
 
 import com.example.demo.model.entity.Course;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ public class CourseDto {
     @NotEmpty(message = "Description must not be empty")
     private String description;
 
+    @JsonFormat(pattern = "dd-MM-yyyy")
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     @NotNull(message = "Please select start date")
     private LocalDate startDate;
