@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
@@ -29,7 +30,7 @@ public class WebSecurityConfig {
     private final LogoutService logoutService;
 
     @Bean
-    public CorsFilter corsFilter() {
+    public CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         // Allow requests from these origins
@@ -39,20 +40,22 @@ public class WebSecurityConfig {
         config.setAllowCredentials(true);
         config.setMaxAge(3600L); // 1 hour
         source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
+        return source;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
+        http.cors().configurationSource(corsConfigurationSource());
 
-        http.authorizeRequests()
-                .mvcMatchers("/auth/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated();
+//        http.authorizeRequests()
+//                .mvcMatchers("/auth/**")
+//                .permitAll()
+//                .anyRequest()
+//                .authenticated();
 
-        http.addFilterBefore(corsFilter(), InitialJwtFilter.class);
+        http.authorizeRequests().anyRequest().permitAll();
+
         http.addFilterBefore(initialJwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
