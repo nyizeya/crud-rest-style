@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CourseRepo extends JpaRepository<Course, Long>, JpaSpecificationExecutor<Course> {
@@ -14,5 +15,10 @@ public interface CourseRepo extends JpaRepository<Course, Long>, JpaSpecificatio
             "select c from Course c JOIN Instructor i ON c.instructor.id = i.id WHERE c.id = :id"
     )
     Optional<Course> findCourseById(@Param("id") Long id);
+
+    @Query(
+            "select c from Course c join Instructor i on c.instructor.id = i.id where i.id = :id"
+    )
+    List<Course> findCourseByInstructor(@Param("id") Long id);
 
 }

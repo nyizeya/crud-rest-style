@@ -71,6 +71,11 @@ public class CourseService {
                 -> new EntityNotFoundException(String.format("course with id [%d] not found", id)));
     }
 
+    public List<CourseDto> getCoursesByInstructorName(Long instructorId) {
+        List<Course> courseList = courseRepo.findCourseByInstructor(instructorId);
+        return courseMapper.toDtoList(courseList);
+    }
+
     public Course updateCourse(CourseUpdateRequest request) {
         Course oldCourse = findCourseById(request.getId());
         Instructor oldInstructor = oldCourse.getInstructor();

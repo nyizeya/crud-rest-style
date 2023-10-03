@@ -6,6 +6,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface CourseMapper {
 
@@ -14,7 +16,11 @@ public interface CourseMapper {
     @Mapping(source = "instructorId", target = "instructor.id")
     Course toEntity(CourseDto courseDto);
 
+    @Mapping(source = "instructor.name", target = "instructorName")
     @Mapping(source = "instructor.id", target = "instructorId")
     CourseDto toDto(Course course);
+
+    List<CourseDto> toDtoList(List<Course> entityList);
+    List<Course> toEntityList(List<CourseDto> dtoList);
 
 }

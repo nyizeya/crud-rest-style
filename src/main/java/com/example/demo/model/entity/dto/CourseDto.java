@@ -33,4 +33,6 @@ public class CourseDto {
 
     @NotNull(message = "Please select a instructor")
     private Long instructorId;
+
+    private String instructorName;
 }

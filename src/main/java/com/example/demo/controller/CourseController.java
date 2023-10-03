@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -48,6 +49,26 @@ public class CourseController {
         DataTablesOutput<CourseDto> dataTablesOutput = createDataTableOutput(
                 filteredCoursePage, totalCourseElements);
 
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return ResponseEntity.ok(dataTablesOutput);
+    }
+
+    @GetMapping("/instructor/{id}")
+    public ResponseEntity<DataTablesOutput<CourseDto>> getCoursesByInstructor(
+            @PathVariable Long id
+    ) {
+        List<CourseDto> dtoList = courseService.getCoursesByInstructorName(id);
+        
+        DataTablesOutput<CourseDto> dataTablesOutput = DataTablesOutput.<CourseDto>builder()
+                .data(dtoList)
+                .recordsTotal(dtoList.size())
+                .recordsFiltered(dtoList.size())
+                .build();
+        
         return ResponseEntity.ok(dataTablesOutput);
     }
 
