@@ -49,17 +49,12 @@ public class CourseController {
         DataTablesOutput<CourseDto> dataTablesOutput = createDataTableOutput(
                 filteredCoursePage, totalCourseElements);
 
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         return ResponseEntity.ok(dataTablesOutput);
     }
 
     @GetMapping("/instructor/{id}")
     public ResponseEntity<DataTablesOutput<CourseDto>> getCoursesByInstructor(
-            @PathVariable Long id
+            @PathVariable long id
     ) {
         List<CourseDto> dtoList = courseService.getCoursesByInstructorName(id);
         
