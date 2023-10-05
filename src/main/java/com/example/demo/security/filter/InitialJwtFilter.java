@@ -73,7 +73,8 @@ public class InitialJwtFilter extends OncePerRequestFilter {
 
         } catch (InvalidTokenException | SignatureException | MalformedJwtException | ExpiredJwtException exception) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            response.getWriter().write("invalid token");
+//            response.getWriter().write("invalid token");
+            filterChain.doFilter(request, response);
         }
 
         filterChain.doFilter(request, response);

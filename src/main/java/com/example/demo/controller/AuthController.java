@@ -6,9 +6,13 @@ import com.example.demo.model.entity.dto.mapper.InstructorMapper;
 import com.example.demo.model.service.InstructorService;
 import com.example.demo.security.model.AuthenticationRequest;
 import com.example.demo.security.utility.AuthenticationService;
+import com.example.demo.security.utility.JwtUtilityService;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +36,7 @@ public class AuthController {
     private final AuthenticationService authenticationService;
     private final InstructorService instructorService;
     private final InstructorMapper instructorMapper;
+    private final JwtUtilityService jwtUtilityService;
 
     @PostMapping("register")
     public ResponseEntity<DataTablesOutput<InstructorDto>> createInstructor(
@@ -116,6 +121,20 @@ public class AuthController {
         dataTablesOutput.setData(Lists.newArrayList(result));
 
         return ResponseEntity.ok(dataTablesOutput);
+    }
+
+    @PostMapping("check-token")
+    public ResponseEntity<Boolean> checkTokenValidity(
+            HttpServletRequest request
+    ) {
+
+        if (null == request.getHeader(HttpHeaders.AUTHORIZATION)) {
+            return ResponseEntity.ok(false);
+        }
+
+        String token = jwtUtilityService.extractTokenFromAuthHeader(request.getHeader(HttpHeaders.AUTHORIZATION));
+
+        return ResponseEntity.ok(jwtUtilityService.isTokenInValidFormat(token));
     }
 
 }

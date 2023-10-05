@@ -1,5 +1,6 @@
 package com.example.demo.model.entity.dto;
 
+import com.example.demo.security.model.ApplicationUserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,5 +29,7 @@ public class InstructorDto {
 
     @NotEmpty(message = "Please enter instructor phone")
     private String phone;
+
+    private ApplicationUserRole role;
 
 }
