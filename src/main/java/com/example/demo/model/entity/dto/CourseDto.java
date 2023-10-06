@@ -23,8 +23,8 @@ public class CourseDto {
     @NotEmpty(message = "Description must not be empty")
     private String description;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "Please select start date")
     private LocalDate startDate;
 
