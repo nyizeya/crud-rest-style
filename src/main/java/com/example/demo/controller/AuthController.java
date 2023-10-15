@@ -13,11 +13,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -135,6 +133,30 @@ public class AuthController {
         String token = jwtUtilityService.extractTokenFromAuthHeader(request.getHeader(HttpHeaders.AUTHORIZATION));
 
         return ResponseEntity.ok(jwtUtilityService.isTokenInValidFormat(token));
+    }
+
+    @GetMapping("current-user")
+    public ResponseEntity<InstructorDto> getCurrentUser(
+            @RequestParam("token") String token
+    ) {
+
+        System.out.println("Getting Current User Start");
+
+        if (StringUtils.isEmpty(token)) {
+            return ResponseEntity.ok(null);
+        }
+
+
+        if (jwtUtilityService.isTokenInValidFormat(token)) {
+            String email = jwtUtilityService.extractUsername(token);
+            Instructor instructor = instructorService.loadInstructorByUsername(email);
+            System.out.println("Current user " + instructor);
+            return ResponseEntity.ok(instructorMapper.toDto(instructor));
+        }
+
+
+        System.out.println("JWT is not valid or null. Cannot get current user.");
+        return ResponseEntity.ok(null);
     }
 
 }
